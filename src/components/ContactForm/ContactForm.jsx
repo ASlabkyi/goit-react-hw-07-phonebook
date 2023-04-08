@@ -8,7 +8,6 @@ export const ContactForm = () => {
   const [number, setNumber] = useState('');
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.phonebook.contacts.items);
-  console.log(contacts);
 
   const handleChange = e => {
     const { name, value } = e.target;
