@@ -1,25 +1,39 @@
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
-import { useDispatch } from 'react-redux';
-import { addContacts } from 'redux/phonebookSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAddContact } from 'redux/options';
 import { Form, Label, Input, Button } from './ContactForm.styled';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.phonebook.contacts.items);
+  console.log(contacts);
 
   const handleChange = e => {
     const { name, value } = e.target;
     name === 'name' ? setName(value) : setNumber(value);
   };
 
+  const isDuplicate = newContact => {
+    return contacts.find(({ name }) => {
+      return name.toLowerCase() === newContact.name.toLowerCase();
+    });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
-    const id = nanoid();
-    const newContact = { id, name, number };
+    const newContact = { name, number };
 
-    dispatch(addContacts(newContact));
+    if (isDuplicate(newContact)) {
+      alert(`${name} is already in contacts`);
+      setName('');
+      setNumber('');
+
+      return;
+    }
+
+    dispatch(setAddContact(newContact));
 
     setName('');
     setNumber('');
